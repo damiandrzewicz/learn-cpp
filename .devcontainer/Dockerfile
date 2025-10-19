@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-24.04
 # ccache + Python venv tools
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        ccache python3-venv python3-pip sudo && \
+        ccache python3-venv python3-pip clangd clang-format sudo && \
     rm -rf /var/lib/apt/lists/*
 
 # Create isolated venv for Conan (avoids PEP 668)

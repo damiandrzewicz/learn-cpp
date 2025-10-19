@@ -1,0 +1,58 @@
+# .clang-format
+BasedOnStyle: Google         # Start from LLVM; alternatives: Google, Chromium, Mozilla, WebKit, Microsoft
+# Language: Cpp
+# Standard: c++23
+
+# Line wrapping / indentation
+ColumnLimit: 100
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 8
+AccessModifierOffset: -4
+BreakBeforeBraces: Allman   # or Allman, Stroustrup, Attach, etc.
+
+# (Optional) be explicit for every construct:
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true   # if/for/while/switch
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeElse: true
+  BeforeCatch: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# # Spacing & wrapping
+SpaceAfterCStyleCast: true
+SpaceBeforeParens: ControlStatements
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+AlignOperands: true
+PointerAlignment: Left     # or Right / Middle
+
+# # Includes
+SortIncludes: true
+IncludeBlocks: Regroup     # keep groups separated by blank lines
+IncludeCategories:
+  - Regex: '^"'
+    Priority: 0            # project headers first: "foo.h"
+  - Regex: '^<[^/]+>'
+    Priority: 1            # system headers: <vector>, <string>
+  - Regex: '^<.*/.*>'
+    Priority: 2            # library subdirs: <boost/...>, <absl/...>
+
+# # Namespaces / braces
+FixNamespaceComments: true
+NamespaceIndentation: None
+
+# # Other niceties
+ReflowComments: true
+DerivePointerAlignment: false
