@@ -14,7 +14,8 @@
         "ms-python.python",
         "matepek.vscode-catch2-test-adapter",
         "streetsidesoftware.code-spell-checker",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "eamodio.gitlens"
       ],
       "settings": {
         "C_Cpp.intelliSenseEngine": "disabled",
@@ -38,7 +39,9 @@
   ],
   // Persist ccache across rebuilds
   "mounts": [
-    "type=volume,source=ccache-vol,target=/home/vscode/.ccache"
+    "type=volume,source=ccache-vol,target=/home/vscode/.ccache",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
   ],
   "remoteUser": "vscode",
   "postStartCommand": "/bin/bash .devcontainer/scripts/post-start.sh",
