@@ -1,0 +1,115 @@
+# C/C++ build artifacts
+*.o
+*.obj
+*.lo
+*.la
+*.d
+*.slo
+
+# Static/Shared libraries
+*.a
+*.lib
+*.la
+*.lo
+*.lai
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Executables and binaries
+*.out
+*.app
+*.exe
+*.elf
+
+# Debug and profiling
+*.dSYM/
+*.pdb
+*.idb
+*.ilk
+core
+vgcore.*
+callgrind.out*
+gmon.out
+
+# Code coverage
+*.gcda
+*.gcno
+*.gcov
+lcov.info
+coverage/
+.coverage
+
+# Sanitizer logs
+asan.*
+lsan.*
+tsan.*
+msan.*
+hwasan.*
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+CMakeUserPresets.json
+cmake-build-*/
+
+# Common build directories (top-level or nested)
+build/
+build-*/
+build*/
+out/
+/bin/
+/lib/
+
+# Ninja
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja
+
+# Compilation database and flags (often generated)
+compile_commands.json
+CompileCommands.json
+compile_flags.txt
+
+# CTest
+Testing/
+CTestTestfile.cmake
+DartConfiguration.tcl
+_ctest_*
+
+# External deps (CMake FetchContent, etc.)
+*_deps/
+.deps/
+
+# Package managers / tool outputs
+vcpkg_installed/
+vcpkg*.log
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.project
+.cproject
+
+# Editor temp files
+*.swp
+*.swo
+*~
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Clangd
+.cache
