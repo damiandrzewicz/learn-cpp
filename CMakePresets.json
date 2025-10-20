@@ -29,6 +29,19 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": true
             }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Coverage (Debug)",
+            "description": "Configure Debug with coverage flags enabled; uses Debug Conan toolchain",
+            "generator": "Ninja",
+            "binaryDir": "build/Coverage",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/Debug/generators/conan_toolchain.cmake",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_COVERAGE": true,
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true
+            }
         }
     ],
     "buildPresets": [
@@ -41,6 +54,11 @@
             "name": "release",
             "displayName": "Build Release",
             "configurePreset": "release"
+        },
+        {
+            "name": "coverage",
+            "displayName": "Build Coverage",
+            "configurePreset": "coverage"
         }
     ],
     "testPresets": [
@@ -58,6 +76,15 @@
             "displayName": "Test Release",
             "configurePreset": "release",
             "configuration": "Release",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Test Coverage",
+            "configurePreset": "coverage",
+            "configuration": "Debug",
             "output": {
                 "outputOnFailure": true
             }

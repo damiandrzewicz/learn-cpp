@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Coverage: Configure, Build, Test, Report",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "cmake --preset coverage && cmake --build --preset coverage -j$(nproc) && ctest --preset coverage --output-on-failure && scripts/coverage-report.sh"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        }
+    ]
+}
