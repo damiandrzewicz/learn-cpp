@@ -1,0 +1,73 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C++: Debug (pick app + preset)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/${input:buildPreset}/${input:appRelPath}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "C++: Debug (CMake selected target)",
+            "type": "cppdbg",
+            "request": "launch",
+            // Requires the CMake Tools extension; choose the launch target from the CMake status bar.
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "buildPreset",
+            "type": "pickString",
+            "description": "Choose CMake preset to use for binaries",
+            "options": [
+                "Debug",
+                "Coverage",
+                "Release"
+            ],
+            "default": "Debug"
+        },
+        {
+            "id": "appRelPath",
+            "type": "pickString",
+            "description": "Pick the app (binary under build/<preset>/...)",
+            "options": [
+                // Module 001_adt app
+                "apps/001_moderndev_sources/001_adt/apps_001_moderndev_sources_001_adt_app",
+                // Module 001_adt tests (optional to debug tests)
+                "apps/001_moderndev_sources/001_adt/apps_001_moderndev_sources_001_adt_tests"
+            ]
+        }
+    ]
+}
