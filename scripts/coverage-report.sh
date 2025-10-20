@@ -22,12 +22,19 @@ if command -v gcovr >/dev/null 2>&1; then
     --filter "${SOURCE_DIR}/apps" \
     --filter "${SOURCE_DIR}/src" \
     --filter "${SOURCE_DIR}/include" \
+    --exclude "${SOURCE_DIR}/apps/.*/tests/.*" \
+    --exclude "${SOURCE_DIR}/tests/.*" \
     --exclude "/usr/include/" \
-    --exclude "/home/.*/\.conan2/" \
-    --exclude "${SOURCE_DIR}/\.vscode/" \
-    --exclude "${SOURCE_DIR}/\.devcontainer/" \
+    --exclude "/home/.*/\\.conan2/" \
+    --exclude "${SOURCE_DIR}/\\.vscode/" \
+    --exclude "${SOURCE_DIR}/\\.devcontainer/" \
+    --exclude '.tests/.' \
+    --exclude-throw-branches \
+    --exclude-unreachable-branches \
     --object-directory "${BUILD_DIR}" \
+    --html-title "learn-cpp Coverage" \
     --html --html-details \
+    --print-summary \
     --output "${REPORT_DIR}/index.html"
   echo "[coverage] Report: ${REPORT_DIR}/index.html"
   exit 0
