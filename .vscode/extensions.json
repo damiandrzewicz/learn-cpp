@@ -1,0 +1,19 @@
+{
+    // Recommended extensions for this workspace
+    "recommendations": [
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-python.python",
+        "matepek.vscode-catch2-test-adapter",
+        "streetsidesoftware.code-spell-checker",
+        "EditorConfig.EditorConfig",
+        "eamodio.gitlens",
+        "iyulab.copy-text-selected-files",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-azuretools.vscode-containers",
+        "mhutchie.git-graph"
+    ]
+}

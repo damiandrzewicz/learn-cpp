@@ -18,7 +18,8 @@
                 "eamodio.gitlens",
                 "iyulab.copy-text-selected-files",
                 "github.copilot",
-                "github.copilot-chat"
+                "github.copilot-chat",
+                "mhutchie.git-graph"
             ]
         }
     },

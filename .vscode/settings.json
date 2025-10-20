@@ -1,0 +1,28 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    // global default
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true, // use spaces when you press Tab
+    "editor.detectIndentation": false,
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "[c]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.formatting": "disabled",
+    "clangd.arguments": [
+        "--background-index",
+        "--header-insertion=iwyu",
+        "--fallback-style=LLVM"
+    ],
+    // CMake (prefer presets created by post-create script)
+    "cmake.useCMakePresets": "always",
+    "cmake.configureOnOpen": false,
+    "cmake.preferredGenerators": [
+        "Ninja"
+    ],
+    "cmake.buildDirectory": "${workspaceFolder}/build"
+}

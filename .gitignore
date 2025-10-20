@@ -89,7 +89,6 @@ vcpkg_installed/
 vcpkg*.log
 
 # Editors/IDEs
-.vscode/
 .idea/
 *.iml
 *.ipr
