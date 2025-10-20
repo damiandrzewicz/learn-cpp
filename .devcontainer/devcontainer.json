@@ -1,49 +1,39 @@
 {
-  "name": "LearnCpp C++ (Ubuntu 24.04)",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  // No GHCR Features (ccache/conan/git) — we install in the Dockerfile instead.
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-vscode.cpptools-extension-pack",
-        "ms-vscode.cmake-tools",
-        "twxs.cmake",
-        "llvm-vs-code-extensions.vscode-clangd",
-        "ms-python.python",
-        "matepek.vscode-catch2-test-adapter",
-        "streetsidesoftware.code-spell-checker",
-        "EditorConfig.EditorConfig",
-        "eamodio.gitlens"
-      ],
-      "settings": {
-        "C_Cpp.intelliSenseEngine": "disabled",
-        "clangd.path": "clangd",
-        "clangd.arguments": [
-          "--header-insertion=never",
-          "--background-index"
-        ],
-        "cmake.generator": "Ninja",
-        "cmake.buildDirectory": "${workspaceFolder}/build",
-        "cmake.configureOnOpen": true,
-        "editor.formatOnSave": true,
-        "C_Cpp.codeAnalysis.clangTidy.enabled": false
-      }
-    }
-  },
-  "runArgs": [
-    "--cap-add=SYS_PTRACE",
-    "--security-opt",
-    "seccomp=unconfined"
-  ],
-  // Persist ccache across rebuilds
-  "mounts": [
-    "type=volume,source=ccache-vol,target=/home/vscode/.ccache",
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
-  "remoteUser": "vscode",
-  "postStartCommand": "/bin/bash .devcontainer/scripts/post-start.sh",
-  "postCreateCommand": "/bin/bash .devcontainer/scripts/post-create.sh"
+    "name": "LearnCpp C++ (Ubuntu 24.04)",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    // No GHCR Features (ccache/conan/git) — we install in the Dockerfile instead.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cmake-tools",
+                "twxs.cmake",
+                "llvm-vs-code-extensions.vscode-clangd",
+                "ms-python.python",
+                "matepek.vscode-catch2-test-adapter",
+                "streetsidesoftware.code-spell-checker",
+                "EditorConfig.EditorConfig",
+                "eamodio.gitlens",
+                "iyulab.copy-text-selected-files",
+                "github.copilot",
+                "github.copilot-chat"
+            ]
+        }
+    },
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+    // Persist ccache across rebuilds
+    "mounts": [
+        "type=volume,source=ccache-vol,target=/home/vscode/.ccache",
+        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    ],
+    "remoteUser": "vscode",
+    "postStartCommand": "/bin/bash .devcontainer/scripts/post-start.sh",
+    "postCreateCommand": "/bin/bash .devcontainer/scripts/post-create.sh"
 }

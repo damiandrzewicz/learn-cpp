@@ -1,4 +1,2 @@
-add_mini_app(APP_TGT AUTO
-  main.cpp
-)
-
+cpp_get_module_name(_base)
+cpp_add_app(_hello NAME "${_base}" SOURCES main.cpp)
