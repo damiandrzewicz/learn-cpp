@@ -19,6 +19,13 @@ if (CCACHE_PROGRAM)
   set(CMAKE_C_COMPILER_LAUNCHER   "${CCACHE_PROGRAM}")
 endif()
 
+# Sanitizers & coverage toggles (applied by helpers per-target)
+option(ENABLE_ASAN     "Enable AddressSanitizer" OFF)
+option(ENABLE_UBSAN    "Enable UndefinedBehaviorSanitizer" OFF)
+option(ENABLE_TSAN     "Enable ThreadSanitizer" OFF)
+option(ENABLE_MSAN     "Enable MemorySanitizer (Clang only)" OFF)
+option(ENABLE_COVERAGE "Enable coverage flags (gcc/clang)" OFF)
+
 option(BUILD_TESTING "Enable tests" ON)
 if(BUILD_TESTING)
   enable_testing()
