@@ -3,22 +3,13 @@ set -euo pipefail
 
 # Coverage build uses Debug + ENABLE_COVERAGE=ON
 BUILD_TYPE="Debug"
-CPPSTD="23"
 
-conan --version || true
-conan profile detect --force || conan profile detect || true
-conan install . -s build_type="${BUILD_TYPE}" -s compiler.cppstd="${CPPSTD}" --build=missing
+# Prepare Conan-generated presets for Debug
+bash scripts/setup-conan-presets.sh "${BUILD_TYPE}"
 
-PRESET="conan-$(echo "${BUILD_TYPE}" | tr '[:upper:]' '[:lower:]')"
-
-echo "[ci-coverage] Configure with preset: ${PRESET} (+ENABLE_COVERAGE=ON)"
-cmake -DENABLE_COVERAGE=ON --preset "${PRESET}"
-
-echo "[ci-coverage] Build with preset: ${PRESET}"
-cmake --build --preset "${PRESET}" -j
-
-echo "[ci-coverage] Run tests"
-ctest --test-dir "build/${BUILD_TYPE}" --output-on-failure
+# Configure, build, and test with coverage enabled
+export EXTRA_CMAKE_FLAGS="-DENABLE_COVERAGE=ON"
+bash scripts/build-type.sh "${BUILD_TYPE}"
 
 # Generate coverage report
 if [ -x scripts/coverage-report.sh ]; then
