@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  # Run on direct pushes only for main (and tags), not for every feature branch
+  push:
+    branches: [ main ]
+    tags: [ 'v*', 'v*.*.*' ]
+  # Validate PRs targeting main; avoids duplicate runs with the push event
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools (Ninja, gcovr) and Conan
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build gcovr
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "conan>=2.0,<3.0"
+
+      - name: Cache Conan
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2
+          key: conan-${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
+          restore-keys: |
+            conan-${{ runner.os }}-
+
+      - name: Conan install (${{ matrix.build_type }})
+        run: |
+          conan profile detect --force
+          conan install . -s build_type=${{ matrix.build_type }} -s compiler.cppstd=23 --build=missing -of build/${{ matrix.build_type }}
+
+      - name: Configure (${{ matrix.build_type }})
+        run: |
+          cmake -S . -B build/${{ matrix.build_type }} -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=build/${{ matrix.build_type }}/generators/conan_toolchain.cmake \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DBUILD_TESTING=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build (${{ matrix.build_type }})
+        run: cmake --build build/${{ matrix.build_type }} -j
+
+      - name: Test (${{ matrix.build_type }})
+        run: ctest --test-dir build/${{ matrix.build_type }} --output-on-failure
