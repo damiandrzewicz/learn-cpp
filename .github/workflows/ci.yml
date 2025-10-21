@@ -23,7 +23,7 @@ jobs:
       - name: Build & Test inside Dev Container (${{ matrix.build_type }})
         uses: devcontainers/ci@v0.3
         with:
-          configFile: .devcontainer/devcontainer.ci.json
+          configFile: .devcontainer/ci/devcontainer.json
           runCmd: |
             chmod +x scripts/ci-build.sh || true
             scripts/ci-build.sh "${{ matrix.build_type }}"

@@ -16,7 +16,7 @@ jobs:
       - name: Coverage inside Dev Container
         uses: devcontainers/ci@v0.3
         with:
-          configFile: .devcontainer/devcontainer.ci.json
+          configFile: .devcontainer/ci/devcontainer.json
           runCmd: |
             chmod +x scripts/ci-coverage.sh || true
             scripts/ci-coverage.sh
