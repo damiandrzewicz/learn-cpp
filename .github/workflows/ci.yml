@@ -20,36 +20,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install tools (Ninja, gcovr) and Conan
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build gcovr
-          python3 -m pip install --upgrade pip
-          python3 -m pip install "conan>=2.0,<3.0"
-
-      - name: Cache Conan
-        uses: actions/cache@v4
+      - name: Build & Test inside Dev Container (${{ matrix.build_type }})
+        uses: devcontainers/ci@v0.3
         with:
-          path: ~/.conan2
-          key: conan-${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
-          restore-keys: |
-            conan-${{ runner.os }}-
-
-      - name: Conan install (${{ matrix.build_type }})
-        run: |
-          conan profile detect --force
-          conan install . -s build_type=${{ matrix.build_type }} -s compiler.cppstd=23 --build=missing -of build/${{ matrix.build_type }}
-
-      - name: Configure (${{ matrix.build_type }})
-        run: |
-          cmake -S . -B build/${{ matrix.build_type }} -G Ninja \
-            -DCMAKE_TOOLCHAIN_FILE=build/${{ matrix.build_type }}/generators/conan_toolchain.cmake \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-            -DBUILD_TESTING=ON \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
-      - name: Build (${{ matrix.build_type }})
-        run: cmake --build build/${{ matrix.build_type }} -j
-
-      - name: Test (${{ matrix.build_type }})
-        run: ctest --test-dir build/${{ matrix.build_type }} --output-on-failure
+          configFile: .devcontainer/devcontainer.json
+          runCmd: |
+            conan --version
+            conan profile detect --force || conan profile detect
+            conan install . -s build_type=${{ matrix.build_type }} -s compiler.cppstd=23 --build=missing -of build/${{ matrix.build_type }}
+            TOOLCHAIN=$(find build/${{ matrix.build_type }} -type f -name conan_toolchain.cmake -print -quit)
+            echo "Using toolchain: $TOOLCHAIN"
+            cmake -S . -B build/${{ matrix.build_type }} -G Ninja \
+              -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DBUILD_TESTING=ON \
+              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+            cmake --build build/${{ matrix.build_type }} -j
+            ctest --test-dir build/${{ matrix.build_type }} --output-on-failure

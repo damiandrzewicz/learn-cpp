@@ -13,53 +13,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install tools (Ninja, gcovr) and Conan
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build gcovr
-          python3 -m pip install --upgrade pip
-          python3 -m pip install "conan>=2.0,<3.0"
-      - name: Verify Ninja available
-        run: ninja --version
-
-      - name: Cache Conan
-        uses: actions/cache@v4
+      - name: Coverage inside Dev Container
+        uses: devcontainers/ci@v0.3
         with:
-          path: ~/.conan2
-          key: conan-${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
-          restore-keys: |
-            conan-${{ runner.os }}-
-
-      - name: Conan install (Debug toolchain for coverage)
-        run: |
-          conan profile detect --force
-          conan install . -s build_type=Debug -s compiler.cppstd=23 --build=missing -of build/Coverage
-      - name: Show Conan generator outputs
-        run: |
-          ls -la build/Coverage || true
-          ls -la build/Coverage/generators || true
-          test -f build/Coverage/generators/conan_toolchain.cmake || (echo "conan_toolchain.cmake not found; check previous step output" && exit 1)
-
-      - name: Configure (ENABLE_COVERAGE=ON)
-        run: |
-          cmake -S . -B build/Coverage -G Ninja \
-            -DCMAKE_TOOLCHAIN_FILE=build/Coverage/generators/conan_toolchain.cmake \
-            -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_COVERAGE=ON \
-            -DBUILD_TESTING=ON \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
-      - name: Build
-        run: cmake --build build/Coverage -j
-
-      - name: Test
-        run: ctest --test-dir build/Coverage --output-on-failure
-
-      - name: Ensure script is executable
-        run: chmod +x scripts/coverage-report.sh
-
-      - name: Generate coverage report
-        run: scripts/coverage-report.sh
+          configFile: .devcontainer/devcontainer.json
+          runCmd: |
+            conan --version
+            conan profile detect --force || conan profile detect
+            conan install . -s build_type=Debug -s compiler.cppstd=23 --build=missing -of build/Coverage
+            TOOLCHAIN=$(find build/Coverage -type f -name conan_toolchain.cmake -print -quit)
+            echo "Using toolchain: $TOOLCHAIN"
+            cmake -S . -B build/Coverage -G Ninja \
+              -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DENABLE_COVERAGE=ON \
+              -DBUILD_TESTING=ON \
+              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+            cmake --build build/Coverage -j
+            ctest --test-dir build/Coverage --output-on-failure
+            chmod +x scripts/coverage-report.sh
+            scripts/coverage-report.sh
 
       - name: Upload coverage HTML
         uses: actions/upload-artifact@v4
