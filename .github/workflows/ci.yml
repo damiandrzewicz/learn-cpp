@@ -23,17 +23,7 @@ jobs:
       - name: Build & Test inside Dev Container (${{ matrix.build_type }})
         uses: devcontainers/ci@v0.3
         with:
-          configFile: .devcontainer/devcontainer.json
+          configFile: .devcontainer/devcontainer.ci.json
           runCmd: |
-            conan --version
-            conan profile detect --force || conan profile detect
-            conan install . -s build_type=${{ matrix.build_type }} -s compiler.cppstd=23 --build=missing -of build/${{ matrix.build_type }}
-            TOOLCHAIN=$(find build/${{ matrix.build_type }} -type f -name conan_toolchain.cmake -print -quit)
-            echo "Using toolchain: $TOOLCHAIN"
-            cmake -S . -B build/${{ matrix.build_type }} -G Ninja \
-              -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" \
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -DBUILD_TESTING=ON \
-              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-            cmake --build build/${{ matrix.build_type }} -j
-            ctest --test-dir build/${{ matrix.build_type }} --output-on-failure
+            chmod +x scripts/ci-build.sh || true
+            scripts/ci-build.sh "${{ matrix.build_type }}"

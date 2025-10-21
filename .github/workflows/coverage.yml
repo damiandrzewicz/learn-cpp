@@ -16,23 +16,10 @@ jobs:
       - name: Coverage inside Dev Container
         uses: devcontainers/ci@v0.3
         with:
-          configFile: .devcontainer/devcontainer.json
+          configFile: .devcontainer/devcontainer.ci.json
           runCmd: |
-            conan --version
-            conan profile detect --force || conan profile detect
-            conan install . -s build_type=Debug -s compiler.cppstd=23 --build=missing -of build/Coverage
-            TOOLCHAIN=$(find build/Coverage -type f -name conan_toolchain.cmake -print -quit)
-            echo "Using toolchain: $TOOLCHAIN"
-            cmake -S . -B build/Coverage -G Ninja \
-              -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" \
-              -DCMAKE_BUILD_TYPE=Debug \
-              -DENABLE_COVERAGE=ON \
-              -DBUILD_TESTING=ON \
-              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-            cmake --build build/Coverage -j
-            ctest --test-dir build/Coverage --output-on-failure
-            chmod +x scripts/coverage-report.sh
-            scripts/coverage-report.sh
+            chmod +x scripts/ci-coverage.sh || true
+            scripts/ci-coverage.sh
 
       - name: Upload coverage HTML
         uses: actions/upload-artifact@v4
