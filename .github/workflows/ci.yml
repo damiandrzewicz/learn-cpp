@@ -1,8 +1,13 @@
 name: CI
 
 on:
+  # Run on direct pushes only for main (and tags), not for every feature branch
   push:
+    branches: [ main ]
+    tags: [ 'v*', 'v*.*.*' ]
+  # Validate PRs targeting main; avoids duplicate runs with the push event
   pull_request:
+    branches: [ main ]
 
 jobs:
   build-test:
