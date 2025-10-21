@@ -10,37 +10,11 @@ ccache -M 10G || true
 ccache -s || true
 
 # Conan setup
-conan --version || true
+bash scripts/setup-conan-presets.sh Debug Release
 
-# Try forced detect first (overwrites), then plain detect as fallback
-conan profile detect --force || conan profile detect || true
-
-# Install dependencies & generate presets for both configs.
-# This produces CMakeUserPresets.json and includes Conan-generated CMakePresets.
-# See: https://docs.conan.io/.../build_project_cmake_presets.html
-conan install . -s build_type=Release -s compiler.cppstd=23 --build=missing
-conan install . -s build_type=Debug   -s compiler.cppstd=23 --build=missing
-
-# ---------- CMake (using presets) ----------
-# Multi-config generators expose a "conan-default" configure preset.
-# Single-config generators use per-config configure presets (conan-debug / conan-release).
-if cmake --preset conan-default >/dev/null 2>&1; then
-  echo "[post-create] Detected multi-config generator (conan-default)."
-  cmake --preset conan-default
-
-  # Build both variants
-  cmake --build --preset conan-debug
-  cmake --build --preset conan-release
-else
-  echo "[post-create] Detected single-config generator."
-  # Debug
-  cmake --preset conan-debug
-  cmake --build --preset conan-debug
-
-  # Release
-  cmake --preset conan-release
-  cmake --build --preset conan-release
-fi
+# Build both variants via reusable script
+bash scripts/build-type.sh Debug
+bash scripts/build-type.sh Release
 
 
 # ---------- compile_commands.json convenience ----------

@@ -1,0 +1,17 @@
+{
+    "name": "LearnCpp C++ (Ubuntu 24.04) - CI",
+    "build": {
+        "dockerfile": "../Dockerfile"
+    },
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+    "mounts": [
+        "type=volume,source=ccache-vol,target=/home/vscode/.ccache"
+    ],
+    "remoteUser": "vscode",
+    "postStartCommand": "/bin/bash .devcontainer/scripts/post-start.sh",
+    "postCreateCommand": "/bin/bash .devcontainer/scripts/post-create.sh"
+}
