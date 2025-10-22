@@ -3,7 +3,9 @@
 #include "IStack.hpp"
 
 #include <array>
+#include <cstddef>
 #include <stdexcept>
+#include <utility>
 
 namespace ds
 {
@@ -14,18 +16,13 @@ class StackArray final : public IStack<T>
 public:
     static_assert(Capacity > 0, "StackArray capacity must be greater than zero");
 
-    virtual void push(const T& v) override
+    void push(const T& v) override
     {
-        ensure_space();
-        data_[top_index_] = v;
-        ++top_index_;
+        push_impl(v);
     }
-
-    virtual void push(T&& v) override
+    void push(T&& v) override
     {
-        ensure_space();
-        data_[top_index_] = std::move(v);
-        ++top_index_;
+        push_impl(std::move(v));
     }
 
     [[nodiscard]] virtual T pop() override
@@ -41,6 +38,14 @@ public:
     }
 
 private:
+    template <class U>
+    void push_impl(U&& v)
+    {
+        ensure_space();
+        data_[top_index_] = std::forward<U>(v);
+        ++top_index_;
+    }
+
     void ensure_space()
     {
         if (top_index_ >= Capacity)
