@@ -19,7 +19,11 @@ conan profile detect --force || conan profile detect || true
 
 for BT in "${BUILD_TYPES[@]}"; do
   echo "[setup-conan] Installing deps for build_type=${BT}"
-  conan install . -s build_type="${BT}" -s compiler.cppstd="${CPPSTD}" --build=missing
+  conan install . \
+    -s build_type="${BT}" \
+    -s compiler.cppstd="${CPPSTD}" \
+    -c tools.cmake.cmaketoolchain:generator=Ninja \
+    --build=missing
 done
 
 echo "[setup-conan] done"
