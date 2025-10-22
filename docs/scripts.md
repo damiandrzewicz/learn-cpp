@@ -4,41 +4,39 @@ This repo centralizes Conan/CMake/CTest logic into small reusable scripts to avo
 
 ### Layout
 
-- `scripts/setup-conan-presets.sh`
   - Detects Conan profile and installs dependencies for one or more build types (defaults to Debug and Release).
   - Generates Conan-driven CMakePresets (e.g., `conan-debug`, `conan-release`).
+ `scripts/setup-conan-presets.sh`
 
 - `scripts/build-type.sh`
   - Configures, builds, and runs tests for a given build type using presets.
-  - Honors optional `EXTRA_CMAKE_FLAGS` (e.g., `-DENABLE_COVERAGE=ON`).
 
 - `scripts/ci-build.sh`
+ `scripts/build.sh`
   - Thin wrapper for CI. Calls `setup-conan-presets.sh` for the requested build type, then `build-type.sh`.
 
 - `scripts/ci-coverage.sh`
-  - Thin wrapper for CI coverage. Prepares Debug presets, builds with `EXTRA_CMAKE_FLAGS=-DENABLE_COVERAGE=ON`, runs tests, and calls `scripts/coverage-report.sh`.
 
-- `scripts/coverage-report.sh`
   - Generates HTML coverage via gcovr with tuned filters and exclusions. See inline flags for customization (tests/throw branches, etc.).
+ `scripts/ci-build.sh` and `scripts/ci-coverage.sh`
 
 ### Dev Container hooks
 
-- `.devcontainer/scripts/post-create.sh`
   - Calls `setup-conan-presets.sh Debug Release` to prepare presets.
+ ### CI Workflows
+ `.github/workflows/build.yml`
   - Builds both Debug and Release via `build-type.sh`.
   - Symlinks `compile_commands.json` for clangd convenience.
 
-- `.devcontainer/scripts/post-start.sh`
-  - Maintains ownership of the ccache volume.
-
+ Single-type build:
+  - `bash scripts/build.sh Debug`
+  - `bash scripts/build.sh Release`
 There are two Dev Container configurations:
-
 - `.devcontainer/devcontainer.json`: for local development. May include local HOME mounts (gitconfig/ssh) for convenience.
-- `.devcontainer/ci/devcontainer.json`: for CI. No HOME mounts; otherwise identical tooling.
 
+ Coverage is enabled by default for the `debug` preset; `scripts/coverage-report.sh` defaults to `build/Debug`.
 ### CI Workflows
-
-- `.github/workflows/ci.yml`
+ Presets come from Conan’s CMake integration and `cmake_layout`. Build directories are `build/Debug` (coverage on) and `build/Release`.
   - Runs inside the CI Dev Container. Uses `scripts/ci-build.sh` for Debug and Release matrix builds.
 
 - `.github/workflows/coverage.yml`
