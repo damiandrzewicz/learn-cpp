@@ -7,5 +7,7 @@ cpp_add_module(
   APP            # creates an app if src/main.cpp exists or if APP_SOURCES provided
   # APP_SOURCES src/main.cpp   # optional explicit list
   TESTS
-  TEST_SOURCES tests/ds/StackArrayTest.cpp
+  TEST_SOURCES 
+    tests/ds/StackArrayTest.cpp
+    tests/ds/StackListTest.cpp
 )

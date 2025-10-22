@@ -45,15 +45,6 @@ struct IStack
     }
 
     /**
-     * @brief Checks if the stack is empty.
-     * @return true if the stack is empty, false otherwise.
-     */
-    [[nodiscard]] bool empty() const noexcept
-    {
-        return is_empty();
-    }
-
-    /**
      * @brief Tries to pop the top value off the stack.
      * @return std::optional containing the popped value, or std::nullopt if the
      * stack is empty.
