@@ -7,7 +7,7 @@
             "command": "/bin/bash",
             "args": [
                 "-lc",
-                "cmake --preset coverage && cmake --build --preset coverage -j$(nproc) && ctest --preset coverage --output-on-failure && scripts/coverage-report.sh"
+                "cmake --preset debug && cmake --build --preset debug -j$(nproc) && ctest --preset debug --output-on-failure && scripts/coverage-report.sh"
             ],
             "group": {
                 "kind": "test",
