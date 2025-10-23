@@ -1,0 +1,17 @@
+Checks: >-
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  cppcoreguidelines-avoid-magic-numbers,
+  cppcoreguidelines-narrowing-conversions,
+  cppcoreguidelines-slicing,
+  misc-*,
+  -bugprone-easily-swappable-parameters,
+  -readability-magic-numbers,
+  -modernize-use-trailing-return-type
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: false
+FormatStyle: none
+InheritParentConfig: false

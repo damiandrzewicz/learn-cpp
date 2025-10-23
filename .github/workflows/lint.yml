@@ -1,0 +1,30 @@
+name: lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint inside Dev Container
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/ci/devcontainer.json
+          runCmd: |
+            # Install tooling inside the container
+            sudo apt-get update
+            sudo apt-get install -y clang-format clang-tidy cppcheck
+            pip3 install --user cmakelang codespell || true
+
+            # Ensure compile_commands.json exists (Debug)
+            bash scripts/build.sh Debug
+
+            # Run linters
+            bash scripts/lint.sh

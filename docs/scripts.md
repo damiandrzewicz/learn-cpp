@@ -1,65 +1,61 @@
 ## Scripts and automation
 
-This repo centralizes Conan/CMake/CTest logic into small reusable scripts to avoid duplication across local dev, Dev Container hooks, and CI workflows.
+This repo centralizes Conan/CMake/CTest logic into a few reusable scripts and runs everything inside a Dev Container for local and CI consistency.
 
 ### Layout
 
 - `scripts/setup-conan-presets.sh`
   - Detects Conan profile and installs dependencies for one or more build types (defaults to Debug and Release).
-  - Generates Conan-driven CMakePresets (e.g., `conan-debug`, `conan-release`).
+  - Generates Conan toolchains in `build/<type>/generators/` consumed by top-level CMake presets.
 
-- `scripts/build-type.sh`
-  - Configures, builds, and runs tests for a given build type using presets.
-  - Honors optional `EXTRA_CMAKE_FLAGS` (e.g., `-DENABLE_COVERAGE=ON`).
+- `scripts/build.sh`
+  - Shared entrypoint for local and CI usage. Accepts `Debug` (default) or `Release`.
+  - Cleans the target build dir on CI to avoid CMake generator cache conflicts, ensures Conan toolchains are present, configures via top-level CMake presets (`debug`/`release`), builds, tests, and for `Debug` generates an HTML coverage report.
 
-- `scripts/ci-build.sh`
-  - Thin wrapper for CI. Calls `setup-conan-presets.sh` for the requested build type, then `build-type.sh`.
-
-- `scripts/ci-coverage.sh`
-  - Thin wrapper for CI coverage. Prepares Debug presets, builds with `EXTRA_CMAKE_FLAGS=-DENABLE_COVERAGE=ON`, runs tests, and calls `scripts/coverage-report.sh`.
+- `scripts/lint.sh`
+  - Runs code quality checks:
+    - clang-format (check mode by default; use `--fix` to format)
+    - clang-tidy (uses compile_commands.json from `build/Debug` or root)
+    - cppcheck (via compile_commands.json)
+    - cmake-format (if installed)
+    - codespell (if installed)
+  - Skips tools that aren’t available; fails if any enabled tool reports issues.
 
 - `scripts/coverage-report.sh`
-  - Generates HTML coverage via gcovr with tuned filters and exclusions. See inline flags for customization (tests/throw branches, etc.).
+  - Generates HTML coverage via gcovr with tuned filters. Defaults to `build/Debug` object directory.
 
 ### Dev Container hooks
 
 - `.devcontainer/scripts/post-create.sh`
-  - Calls `setup-conan-presets.sh Debug Release` to prepare presets.
-  - Builds both Debug and Release via `build-type.sh`.
-  - Symlinks `compile_commands.json` for clangd convenience.
+  - May prepare presets and build types; can be adapted as needed.
 
 - `.devcontainer/scripts/post-start.sh`
   - Maintains ownership of the ccache volume.
 
 There are two Dev Container configurations:
 
-- `.devcontainer/devcontainer.json`: for local development. May include local HOME mounts (gitconfig/ssh) for convenience.
-- `.devcontainer/ci/devcontainer.json`: for CI. No HOME mounts; otherwise identical tooling.
+- `.devcontainer/devcontainer.json`: for local development.
+- `.devcontainer/ci/devcontainer.json`: for CI, minimal mounts.
 
 ### CI Workflows
 
-- `.github/workflows/ci.yml`
-  - Runs inside the CI Dev Container. Uses `scripts/ci-build.sh` for Debug and Release matrix builds.
+- `.github/workflows/build.yml`
+  - Runs both Debug (with coverage) and Release using `scripts/build.sh` inside the Dev Container.
 
-- `.github/workflows/coverage.yml`
-  - Runs inside the CI Dev Container. Uses `scripts/ci-coverage.sh` and uploads the HTML artifact.
+- `.github/workflows/lint.yml`
+  - Runs linters inside the Dev Container and fails on findings.
 
 ### Usage
 
-- Local full setup and build (inside Dev Container):
-  - `bash scripts/setup-conan-presets.sh`  # Debug + Release
-  - `bash scripts/build-type.sh Debug`
-  - `bash scripts/build-type.sh Release`
-
 - Single-type build:
-  - `bash scripts/setup-conan-presets.sh Debug`
-  - `bash scripts/build-type.sh Debug`
+  - `bash scripts/build.sh Debug`
+  - `bash scripts/build.sh Release`
 
-- Coverage run (locally):
-  - `EXTRA_CMAKE_FLAGS=-DENABLE_COVERAGE=ON bash scripts/build-type.sh Debug`
-  - `bash scripts/coverage-report.sh`
+- Lint locally:
+  - `bash scripts/lint.sh`        # check only
+  - `bash scripts/lint.sh --fix`  # apply clang-format and re-run checks
 
 ### Notes
 
-- Presets come from Conan’s CMake integration and `cmake_layout`. Build directories are typically `build/Debug` and `build/Release`.
-- To tweak coverage inclusions/exclusions (tests, throw/unreachable), adjust flags in `scripts/coverage-report.sh` or add environment toggles as needed.
+- Presets come from Conan’s CMake integration and `cmake_layout`. Build directories are `build/Debug` (coverage on) and `build/Release`.
+- Conan is configured to generate Ninja toolchains for consistency with presets.
