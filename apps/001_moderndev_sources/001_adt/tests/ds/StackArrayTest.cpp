@@ -14,8 +14,8 @@ TEST(StackArray, PushPopBasic)
     s.push(2);
 
     EXPECT_FALSE(s.is_empty());
-    EXPECT_EQ(s.pop(), 2);
-    EXPECT_EQ(s.pop(), 1);
+    EXPECT_EQ(2, s.pop());
+    EXPECT_EQ(1, s.pop());
     EXPECT_TRUE(s.is_empty());
 }
 
@@ -23,11 +23,11 @@ TEST(StackArray, EmplaceAndTryPop)
 {
     StackArray<std::string, 3> s;
 
-    s.emplace(3, 'x');  // "xxx"
+    s.emplace(3, 'x');
     auto v = s.try_pop();
 
     ASSERT_TRUE(v.has_value());
-    EXPECT_EQ(*v, "xxx");
+    EXPECT_EQ("xxx", *v);
     EXPECT_FALSE(s.try_pop().has_value());
 }
 
@@ -56,8 +56,8 @@ TEST(StackArray, PushByReference)
     str = "world";
     s.push(std::move(str));
 
-    EXPECT_EQ(s.pop(), "world");
-    EXPECT_EQ(s.pop(), "hello");
+    EXPECT_EQ("world", s.pop());
+    EXPECT_EQ("hello", s.pop());
 }
 
 // Covers capacity=1 successful push/pop path (previously only underflow was tested)
@@ -70,7 +70,7 @@ TEST(StackArray, CapacityOneHappyPath)
     s.push(x);  // cover const& overload for int, Capacity=1
 
     EXPECT_FALSE(s.is_empty());
-    EXPECT_EQ(s.pop(), 42);  // cover pop success for Capacity=1 instantiation
+    EXPECT_EQ(42, s.pop());  // cover pop success for Capacity=1 instantiation
     EXPECT_TRUE(s.is_empty());
 }
 
@@ -84,8 +84,8 @@ TEST(StackArray, IntLvaluePush)
     s.push(a);  // const& overload
     s.push(b);  // const& overload
 
-    EXPECT_EQ(s.pop(), 9);
-    EXPECT_EQ(s.pop(), 7);
+    EXPECT_EQ(9, s.pop());
+    EXPECT_EQ(7, s.pop());
 }
 
 // Exercise IStack<int>::try_pop both branches (value and nullopt)
@@ -97,7 +97,7 @@ TEST(StackArray, TryPopIntBothPaths)
     s.emplace(123);        // uses push(T&&)
     auto v = s.try_pop();  // value branch
     ASSERT_TRUE(v.has_value());
-    EXPECT_EQ(*v, 123);
+    EXPECT_EQ(123, *v);
 
     EXPECT_FALSE(s.try_pop().has_value());  // empty again
 }
