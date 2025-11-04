@@ -14,8 +14,8 @@ TEST(StackList, PushPopBasic)
     s.push(2);
 
     EXPECT_FALSE(s.is_empty());
-    EXPECT_EQ(s.pop(), 2);
-    EXPECT_EQ(s.pop(), 1);
+    EXPECT_EQ(2, s.pop());
+    EXPECT_EQ(1, s.pop());
     EXPECT_TRUE(s.is_empty());
 }
 
@@ -23,11 +23,11 @@ TEST(StackList, EmplaceAndTryPop)
 {
     StackList<std::string> s;
 
-    s.emplace(3, 'x');  // "xxx"
+    s.emplace(3, 'x');
     auto v = s.try_pop();
 
     ASSERT_TRUE(v.has_value());
-    EXPECT_EQ(*v, "xxx");
+    EXPECT_EQ("xxx", *v);
     EXPECT_FALSE(s.try_pop().has_value());
 }
 
@@ -46,6 +46,6 @@ TEST(StackList, PushByReference)
     str = "world";
     s.push(std::move(str));
 
-    EXPECT_EQ(s.pop(), "world");
-    EXPECT_EQ(s.pop(), "hello");
+    EXPECT_EQ("world", s.pop());
+    EXPECT_EQ("hello", s.pop());
 }
